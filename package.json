@@ -1,0 +1,27 @@
+{
+  "name": "image_extractor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/npasher/image_extractor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/npasher/image_extractor/issues"
+  },
+  "homepage": "https://github.com/npasher/image_extractor#readme",
+  "dependencies": {
+    "async": "^2.6.1",
+    "md5": "^2.2.1",
+    "puppeteer": "^1.6.1",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2"
+  }
+}
