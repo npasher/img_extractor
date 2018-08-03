@@ -48,12 +48,12 @@ const downloadDir=(dirname,count=0)=>async(uri)=>{
   });
 };
 
-async function imageExtraction(imageName){
-  const dirname=fs.mkdtempSync(`images-${imageName}`);
+async function imageExtraction(imgName){
+  const dirname=fs.mkdtempSync(`images-${imgName}`);
   if (!fs.existsSync(dirname)){
     fs.mkdirSync("./images");
   }
-  const imageUrl="https://www.google.com/search?q=${imageName}&tbm=isch";
+  const imageUrl="https://www.google.com/search?q=${imgName}&tbm=isch";
 
   console.log("Browser Launch.");
 
@@ -64,9 +64,9 @@ async function imageExtraction(imageName){
   console.log("Going to:",imageUrl);
   await page.goto(imageUrl);
 
-  const imagesUrls=[];
-  const downloadImage=downloadDir(dirname);
-  const imagesQueue=async.queue(async.asyncify(downloadImage),6);
+  const imgUrls=[];
+  const imgDownload=downloadDir(dirname);
+  const imgQueue=async.queue(async.asyncify(imgDownload),6);
 
   page.on("response",(interceptedResponse)=>{
     const request=interceptedResponse.request();
@@ -74,8 +74,8 @@ async function imageExtraction(imageName){
     if(resource==="image"){
       const url=request.url();
       if(url.indexOf("images")>0){
-        imagesUrls.push(url);
-        imagesQueue.push(url);
+        imgUrls.push(url);
+        imgQueue.push(url);
       }
     }
   });
@@ -85,24 +85,24 @@ async function imageExtraction(imageName){
   page.click('#smb');
   await scrollDown(page);
 
-  if (imagesQueue.length()){
-    console.log("Items in queue:",imagesQueue.length());
+  if (imgQueue.length()){
+    console.log("Items in queue:",imgQueue.length());
     await new Promise((resolve)=>{
-      imagesQueue.drain=resolve;
+      imgQueue.drain=resolve;
     });
   }
   await browser.close();
-  return imagesUrls.length;
+  return imgUrls.length;
 }
 
 (async()=>{
   const [nodePath,currentPath, ...args]=process.argv;
   if (args.length){
-    const [imageName]=args;
-    console.log("Searching Google Images for '${imageName}'.");
-    const totalImages=await imageExtraction(imageName);
+    const [imgName]=args;
+    console.log("Searching Google Images for '${imgName}'.");
+    const totalImages=await imageExtraction(imgName);
     console.log("Downloaded images:",totalImages);
     return console.log("Complete.");
   }
-  return console.log(" 'imageName' argument required.");
+  return console.log(" 'imgName' argument required.");
 })();
